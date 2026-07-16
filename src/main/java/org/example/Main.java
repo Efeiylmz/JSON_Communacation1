@@ -25,10 +25,16 @@ public class Main {
 
             // Okunan bilgileri ekrana yazdır
 
+
+            /*
             System.out.println("IP      : " + config.getIp());
             System.out.println("Port    : " + config.getPort());
             System.out.println("Message : " + config.getMessage());
+             */
 
+            System.out.println("IP      : " + config.getNetwork().getIp());
+            System.out.println("Port    : " + config.getNetwork().getPort());
+            System.out.println("Message : " + config.getMessage().getText());
         } catch (Exception e) {
             e.printStackTrace();
         }

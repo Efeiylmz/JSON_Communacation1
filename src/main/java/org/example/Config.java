@@ -3,35 +3,33 @@ package org.example;
 
 public class Config {
 
-    private String ip;
-    private int port;
-    private String message;
+    private NetworkConfig network;
 
+    private MessageConfig message;
 
-    public Config() {
+    public Config(){
+
     }
 
-    public String getIp() {
-        return ip;
-    }
+    public NetworkConfig getNetwork(){
 
-    public int getPort() {
-        return port;
+        return network;
     }
+    public MessageConfig getMessage(){
 
-    public String getMessage() {
         return message;
     }
 
-    public void setIp(String network_ip) {
-        this.ip = network_ip;
+    public void setNetwork(NetworkConfig network){
+
+        this.network = network;
     }
 
-    public void setPort(int port) {
-        this.port = port;
-    }
+    public void setMessage(MessageConfig message){
 
-    public void setMessage(String message) {
         this.message = message;
     }
+
+
+
 }
