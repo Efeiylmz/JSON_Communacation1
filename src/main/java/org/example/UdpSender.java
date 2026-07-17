@@ -16,7 +16,12 @@ public class UdpSender {
 
             String message = config.getMessage().getText();
 
-            byte[] data = message.getBytes();
+            // ip, port, message değerleri alınır
+
+            byte[] data = hexStringtoByteArray(message);
+
+            // hex byte dönüşümlü veri diziye kaydedilir
+
 
             InetAddress adress = InetAddress.getByName(ip);
 
@@ -31,6 +36,34 @@ public class UdpSender {
             e.printStackTrace();
 
             }
+    }
+
+
+
+    private byte[] hexStringtoByteArray(String hex){
+
+
+        // Eğer boşluklu gelirse kaldır
+        hex = hex.replace(" ","");
+
+        if (hex.length() %2 != 0 ) {
+
+            throw new IllegalArgumentException(" Hex string lenghth must be even number ");
+        }
+
+        byte[] data = new byte[hex.length()/2];
+
+        for(int i = 0 ; i < hex.length() ; i +=2 ){
+
+            // string hex dönüşümü yapılır
+
+            String byteString = hex.substring(i,i+2);
+
+            data[i/2] = (byte) Integer.parseInt(byteString,16);
+        }
+
+        return data;
+
     }
 
 }
