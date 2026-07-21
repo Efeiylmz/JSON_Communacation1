@@ -1,6 +1,9 @@
 package org.example;
 import java.io.InputStream;
 
+
+import static javafx.application.Application.launch;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -17,6 +20,6 @@ public class Main {
             UdpSender sender = new UdpSender();
             sender.send(config);
 
-
+            launch(HelloApplication.class, args);
         }
     }
