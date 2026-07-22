@@ -1,6 +1,9 @@
 package org.example;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.File;
 import java.io.InputStream;
+
 
 
 public class JSONParser {
@@ -27,6 +30,26 @@ public class JSONParser {
             e.printStackTrace();
             return null;
         }
+        }
 
-    }
+        public void saveJSONData(Config config){
+
+            try {
+
+                ObjectMapper mapper = new ObjectMapper();
+
+                File file = new File("src/main/resources/config.json");
+
+                mapper.writerWithDefaultPrettyPrinter().writeValue(file, config);
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
+
+            }
+        }
+
+
+
+
 }

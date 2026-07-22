@@ -16,6 +16,7 @@ public class Main {
             System.out.println("IP      : " + config.getNetwork().getIp());
             System.out.println("Port    : " + config.getNetwork().getPort());
             System.out.println("Message : " + config.getMessage().getText());
+            System.out.println("Interval Ms : " + config.gettimer().getIntervalMs());
 
             UdpSender sender = new UdpSender();
             sender.send(config);

@@ -1,9 +1,13 @@
 {
-  "network": {
-    "ip": "192.168.183.130",
-    "port": 5005
+  "network" : {
+    "ip" : "192.168.130.111",
+    "port" : 10001
   },
-  "message": {
-    "text": "12 34 56 7E FE "
+  "message" : {
+    "text" : "12 34 56 78 EF"
+  },
+  "timer" : {
+    "intervalMs" : 1000055,
+    "timerEnabled" : false
   }
 }

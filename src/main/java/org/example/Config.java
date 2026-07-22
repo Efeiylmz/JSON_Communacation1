@@ -7,6 +7,8 @@ public class Config {
 
     private MessageConfig message;
 
+    private TimerConfig timer;
+
     public Config(){
 
     }
@@ -28,6 +30,16 @@ public class Config {
     public void setMessage(MessageConfig message){
 
         this.message = message;
+    }
+
+    public void settimer(TimerConfig timer){
+
+        this.timer = timer;
+    }
+
+    public TimerConfig gettimer(){
+
+        return timer;
     }
 
 
