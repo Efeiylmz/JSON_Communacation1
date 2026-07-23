@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.chart.BubbleChart?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.example.UDPSenderController"
+      prefHeight="500.0"
+      prefWidth="400.0"
+      spacing="20">
+    <padding>
+        <Insets top="20" bottom="20" left="20" right="20"></Insets>
+    </padding>
+
+    <GridPane hgap="10" vgap="10">
+
+        <Label text="IP Adress"
+               GridPane.columnIndex="0"
+               GridPane.rowIndex="0"/>
+
+        <TextField fx:id="ipField"
+                   promptText="1xx.1xx.1xx.1xx"
+                   GridPane.columnIndex="1"
+                   GridPane.rowIndex="0"/>
+
+        <Label text="Port"
+               GridPane.columnIndex="0"
+               GridPane.rowIndex="1"/>
+        <TextField fx:id="portField"
+                   GridPane.columnIndex="1"
+                   GridPane.rowIndex="1"/>
+        <Label text="Message"
+               GridPane.columnIndex="0"
+               GridPane.rowIndex="2"/>
+
+        <TextField fx:id="messageField"
+                   GridPane.columnIndex="1"
+                   GridPane.rowIndex="2"/>
+
+        <Label text="Interval Time"
+               GridPane.columnIndex="0"
+               GridPane.rowIndex="3"/>
+        <TextField fx:id="intervalField"
+                   GridPane.columnIndex="1"
+                   GridPane.rowIndex="3"/>
+        <Label text="ms"
+               GridPane.columnIndex="2"
+               GridPane.rowIndex="3"/>
+            </GridPane>
+
+    <HBox spacing="20">
+
+        <Button text="Load JSON"
+                onAction="#loadJson"/>
+        <Button text="Save JSON"
+                onAction="#saveJson"/>
+        <Button text="Send Once"
+                onAction="#sendOnce"/>
+        <Button
+                fx:id="sendPeriodicButton"
+                text="Send Periodically"
+                onAction="#sendPeriodic"/>
+
+    </HBox>
+
+    <Label  fx:id="status"
+            text="Status : "/>
+
+</VBox>
