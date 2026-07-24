@@ -37,7 +37,7 @@ public class Config {
         this.timer = timer;
     }
 
-    public TimerConfig gettimer(){
+    public TimerConfig getTimer(){
 
         return timer;
     }

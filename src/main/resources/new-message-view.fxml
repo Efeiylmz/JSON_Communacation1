@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.BorderPane?>
+
+<?import javafx.geometry.Insets?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.newMessageController"
+            prefHeight="400.0" prefWidth="600.0">
+
+    <top>
+        <HBox   spacing="10">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+
+
+            <Label text="Mesaj adı"/>
+            <TextField fx:id="messageName" maxWidth="150"/>
+
+
+        </HBox>
+    </top>
+
+
+
+    <center>
+        <VBox spacing="10">
+            <padding>
+                <Insets top="0" right="0" bottom="0" left="20"/>
+            </padding>
+
+
+            <VBox fx:id="fieldsBox"
+                  spacing="5"/>
+
+        </VBox>
+
+    </center>
+
+    <bottom>
+        <HBox alignment="BOTTOM_LEFT"
+              spacing="10"
+        >
+
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+
+            <Button text="+"
+                    onAction="#addNewField"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="KAYDET"
+                    onAction="#saveMessages"/>
+
+
+        </HBox>
+
+    </bottom>
+
+
+</BorderPane>

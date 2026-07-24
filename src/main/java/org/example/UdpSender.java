@@ -1,10 +1,14 @@
 package org.example;
 
 
-import javax.xml.crypto.Data;
+
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 public class UdpSender {
 
@@ -12,6 +16,9 @@ public class UdpSender {
     private Thread streamThread;
 
     private volatile boolean streaming;
+    private ScheduledExecutorService scheduler;
+    private ScheduledFuture<?> streamTask;
+
 
 
 
@@ -56,7 +63,7 @@ public class UdpSender {
     }
 
 
-    public void startStream(Config config) {
+    public synchronized void startStream(Config config) {
 
         if (streaming) {
             return;
@@ -64,37 +71,32 @@ public class UdpSender {
 
         streaming = true;
 
-        streamThread = new Thread(() -> {
+        scheduler = Executors.newSingleThreadScheduledExecutor();
 
-            while (streaming) {
-
-                send(config);
-
-                try {
-
-                    Thread.sleep(config.gettimer().getIntervalMs());
-
-                } catch (InterruptedException e) {
-
-                    Thread.currentThread().interrupt();
-                    break;
-
-                }
-//                scheduledexecutorservice
-            }
-
-        });
-
-        streamThread.setDaemon(true);
-        streamThread.start();
+        streamTask = scheduler.scheduleAtFixedRate(
+                () -> send(config),
+                0,
+                config.getTimer().getIntervalMs(),
+                TimeUnit.MILLISECONDS
+        );
     }
 
-    public void stopStream() {
+    public synchronized void stopStream() {
+
+        if (!streaming) {
+            return;
+        }
 
         streaming = false;
 
-        if (streamThread != null) {
-            streamThread.interrupt();
+        if (streamTask != null) {
+            streamTask.cancel(false);
+            streamTask = null;
+        }
+
+        if (scheduler != null) {
+            scheduler.shutdown();
+            scheduler = null;
         }
     }
 

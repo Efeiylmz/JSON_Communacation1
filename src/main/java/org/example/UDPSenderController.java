@@ -1,10 +1,14 @@
 package org.example;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class UDPSenderController {
 
@@ -29,12 +33,13 @@ public class UDPSenderController {
     @FXML
     private Button sendPeriodicButton;
 
+
     private void updateConfigFromGui(){
 
         config.getNetwork().setIp(ipField.getText());
         config.getNetwork().setPort(Integer.parseInt(portField.getText()));
         config.getMessage().setText(messageField.getText());
-        config.gettimer().setIntervalMs(Integer.parseInt(intervalField.getText()));
+        config.getTimer().setIntervalMs(Integer.parseInt(intervalField.getText()));
     }
     @FXML
     private void loadJson(){
@@ -44,7 +49,7 @@ public class UDPSenderController {
         ipField.setText(config.getNetwork().getIp());
         portField.setText(String.valueOf(config.getNetwork().getPort()));
         messageField.setText(config.getMessage().getText());
-        intervalField.setText(String.valueOf(config.gettimer().getIntervalMs()));
+        intervalField.setText(String.valueOf(config.getTimer().getIntervalMs()));
 
         status.setText("Status : JSON settings uploaded.....!");
 
@@ -102,7 +107,16 @@ public class UDPSenderController {
         }
 
     }
+    @FXML
+    private void newMessageWindow()throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(UdpSenderApplication.class.getResource("/new-message-view.fxml"));
 
+        Scene scene = new Scene(fxmlLoader.load(),400,500);
+        Stage stage = new Stage();
+        stage.setScene(scene);
+        stage.setResizable(false);
+        stage.showAndWait();
+    }
 
 
 }

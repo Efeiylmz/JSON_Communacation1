@@ -1,10 +1,10 @@
 {
   "network" : {
-    "ip" : "192.168.183.130",
+    "ip" : "192.168.70.68",
     "port" : 5005
   },
   "message" : {
-    "text" : "12 34 56 78 EF EF"
+    "text" : "12345678EFEF"
   },
   "timer" : {
     "intervalMs" : 1000,

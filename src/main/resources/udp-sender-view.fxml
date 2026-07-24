@@ -1,76 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.text.Text?>
-<?import javafx.scene.chart.BubbleChart?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="org.example.UDPSenderController"
-      prefHeight="500.0"
       prefWidth="400.0"
+      prefHeight="500.0"
       spacing="20">
+
     <padding>
-        <Insets top="20" bottom="20" left="20" right="20"></Insets>
+        <Insets top="20" right="20" bottom="20" left="20"/>
     </padding>
 
-    <GridPane hgap="10" vgap="10">
-
-        <Label text="IP Adress"
-               GridPane.columnIndex="0"
-               GridPane.rowIndex="0"/>
-
+    <HBox>
+        <Label text="IP Address" prefWidth="80"/>
         <TextField fx:id="ipField"
-                   promptText="1xx.1xx.1xx.1xx"
-                   GridPane.columnIndex="1"
-                   GridPane.rowIndex="0"/>
+                   promptText="1xx.1xx.1xx.1xx"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="Yeni Mesaj"
+            onAction="#newMessageWindow"
+        />
+    </HBox>
 
-        <Label text="Port"
-               GridPane.columnIndex="0"
-               GridPane.rowIndex="1"/>
+    <HBox>
+        <Label text="Port" prefWidth="80"/>
         <TextField fx:id="portField"
-                   GridPane.columnIndex="1"
-                   GridPane.rowIndex="1"/>
-        <Label text="Message"
-               GridPane.columnIndex="0"
-               GridPane.rowIndex="2"/>
+                   promptText="5005"/>
+    </HBox>
 
+    <HBox>
+        <Label text="Message" prefWidth="80"/>
         <TextField fx:id="messageField"
-                   GridPane.columnIndex="1"
-                   GridPane.rowIndex="2"/>
+                   promptText="12EA56FA78"/>
+    </HBox>
 
-        <Label text="Interval Time"
-               GridPane.columnIndex="0"
-               GridPane.rowIndex="3"/>
+    <HBox>
+        <Label text="Interval Time" prefWidth="80"/>
         <TextField fx:id="intervalField"
-                   GridPane.columnIndex="1"
-                   GridPane.rowIndex="3"/>
-        <Label text="ms"
-               GridPane.columnIndex="2"
-               GridPane.rowIndex="3"/>
-            </GridPane>
+                   promptText="1000"/>
+        <Label text="ms"/>
+    </HBox>
 
-    <HBox spacing="20">
+    <Separator/>
 
-        <Button text="Load JSON"
-                onAction="#loadJson"/>
-        <Button text="Save JSON"
-                onAction="#saveJson"/>
-        <Button text="Send Once"
-                onAction="#sendOnce"/>
-        <Button
-                fx:id="sendPeriodicButton"
-                text="Send Periodically"
-                onAction="#sendPeriodic"/>
+    <HBox spacing="40" alignment="CENTER_LEFT">
+
+        <HBox spacing="10">
+            <Button text="Load JSON"
+                    onAction="#loadJson"/>
+            <Button text="Save JSON"
+                    onAction="#saveJson"/>
+        </HBox>
+
+        <HBox spacing="10">
+            <Button text="Send Once"
+                    onAction="#sendOnce"/>
+            <Button fx:id="sendPeriodicButton"
+                    text="Send Periodically"
+                    onAction="#sendPeriodic"/>
+        </HBox>
 
     </HBox>
 
-    <Label  fx:id="status"
-            text="Status : "/>
+    <Label fx:id="status"
+           text="Status: Ready"/>
 
 </VBox>

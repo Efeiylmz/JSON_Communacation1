@@ -15,8 +15,11 @@ public class UdpSenderApplication extends Application {
 
         Scene scene = new Scene(fxmlLoader.load(),500,400);
         stage.setTitle("UDP Sender");
+        stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
+
+
 
     }
 }
