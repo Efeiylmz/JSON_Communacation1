@@ -1,6 +1,9 @@
 
 package org.example;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Config {
 
     private NetworkConfig network;
@@ -9,8 +12,20 @@ public class Config {
 
     private TimerConfig timer;
 
+    private List<CustomMessage> customMessages = new ArrayList<>();
+
     public Config(){
 
+    }
+
+    public List<CustomMessage> getCustomMessages(){
+
+        return customMessages;
+    }
+
+    public void setCustomMessages(List<CustomMessage> customMessages){
+
+        this.customMessages = customMessages;
     }
 
     public NetworkConfig getNetwork(){

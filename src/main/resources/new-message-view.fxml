@@ -1,67 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.layout.BorderPane?>
 
-<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.cell.CheckBoxTableCell?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.example.newMessageController"
-            prefHeight="400.0" prefWidth="600.0">
+            prefHeight="800.0" prefWidth="550">
 
     <top>
-        <HBox   spacing="10">
-            <padding>
-                <Insets top="20" right="20" bottom="20" left="20"/>
-            </padding>
-
-
-            <Label text="Mesaj adı"/>
-            <TextField fx:id="messageName" maxWidth="150"/>
-
-
-        </HBox>
-    </top>
-
-
-
-    <center>
         <VBox spacing="10">
             <padding>
-                <Insets top="0" right="0" bottom="0" left="20"/>
+                <Insets top="20" right="20" bottom="10" left="20"/>
             </padding>
 
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Kayıtlı mesaj" prefWidth="80"/>
+                <ComboBox fx:id="savedMessages"
+                          prefWidth="150"
+                          promptText="Seçiniz"
+                          onAction="#loadSelectedMessage"/>
+                <Button text="Yeni" onAction="#clearForm"/>
+            </HBox>
 
-            <VBox fx:id="fieldsBox"
-                  spacing="5"/>
-
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Mesaj adı" prefWidth="80"/>
+                <TextField fx:id="newMessageName" maxWidth="150"/>
+                <Button text="Mesajı Sil" onAction="#deleteMessage"/>
+            </HBox>
         </VBox>
+    </top>
 
+    <center>
+        <VBox fx:id="fieldsBox" spacing="5">
+            <padding>
+                <Insets top="0" right="20" bottom="0" left="20"/>
+            </padding>
+        </VBox>
     </center>
 
     <bottom>
-        <HBox alignment="BOTTOM_LEFT"
-              spacing="10"
-        >
-
+        <VBox spacing="10">
             <padding>
-                <Insets top="20" right="20" bottom="20" left="20"/>
+                <Insets top="10" right="20" bottom="20" left="20"/>
             </padding>
 
-            <Button text="+"
-                    onAction="#addNewField"/>
-            <Region HBox.hgrow="ALWAYS"/>
-            <Button text="KAYDET"
-                    onAction="#saveMessages"/>
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Oluşan mesaj:"/>
+                <Label fx:id="preview" text="-"/>
+            </HBox>
 
-
-        </HBox>
-
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Button text="+" onAction="#addNewField"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="status"/>
+                <Button text="KAYDET" onAction="#saveMessages"/>
+            </HBox>
+        </VBox>
     </bottom>
-
 
 </BorderPane>

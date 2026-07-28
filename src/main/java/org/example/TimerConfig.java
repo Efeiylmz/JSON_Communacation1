@@ -15,12 +15,4 @@ public class TimerConfig {
         this.intervalMs = intervalMs;
     }
 
-    public boolean isTimerEnabled(){
-        return timerEnabled;
-    }
-
-    public void setTimerEnabled(boolean timerEnabled){
-
-        this.timerEnabled = timerEnabled;
-    }
 }

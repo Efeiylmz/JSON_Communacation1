@@ -19,12 +19,6 @@ public class UdpSender {
     private ScheduledExecutorService scheduler;
     private ScheduledFuture<?> streamTask;
 
-
-
-
-
-
-
     public void send(Config config){
 
         try(DatagramSocket socket = createSocket()){

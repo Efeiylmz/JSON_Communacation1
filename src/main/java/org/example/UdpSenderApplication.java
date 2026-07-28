@@ -13,13 +13,11 @@ public class UdpSenderApplication extends Application {
 
         FXMLLoader fxmlLoader = new FXMLLoader(UdpSenderApplication.class.getResource("/udp-sender-view.fxml"));
 
-        Scene scene = new Scene(fxmlLoader.load(),500,400);
+        Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("UDP Sender");
         stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
-
-
 
     }
 }

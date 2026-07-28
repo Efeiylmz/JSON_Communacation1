@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -40,20 +41,30 @@ public class UDPSenderController {
         config.getNetwork().setPort(Integer.parseInt(portField.getText()));
         config.getMessage().setText(messageField.getText());
         config.getTimer().setIntervalMs(Integer.parseInt(intervalField.getText()));
+
     }
     @FXML
     private void loadJson(){
 
-        config = parser.getJSONdata();
+        try {
+            Config loaded = parser.getJSONdata();
 
-        ipField.setText(config.getNetwork().getIp());
-        portField.setText(String.valueOf(config.getNetwork().getPort()));
-        messageField.setText(config.getMessage().getText());
-        intervalField.setText(String.valueOf(config.getTimer().getIntervalMs()));
+            // Buraya geldiysek yükleme başarılı — ancak şimdi atıyoruz
+            config = loaded;
 
-        status.setText("Status : JSON settings uploaded.....!");
+            ipField.setText(config.getNetwork().getIp());
+            portField.setText(String.valueOf(config.getNetwork().getPort()));
+            messageField.setText(config.getMessage().getText());
+            intervalField.setText(String.valueOf(config.getTimer().getIntervalMs()));
 
+            status.setText("Status : JSON settings uploaded.....!");
+
+        } catch (ConfigException e) {
+            status.setText("Status : " + e.getMessage());
+            e.printStackTrace();   // konsolda tam yığın izi kalsın
+        }
     }
+
     @FXML
     private void saveJson(){
 
@@ -68,6 +79,7 @@ public class UDPSenderController {
         status.setText("Status : New JSON configurations updated.....!");
 
     }
+
     @FXML
     private void sendOnce(){
 
@@ -107,12 +119,24 @@ public class UDPSenderController {
         }
 
     }
-    @FXML
-    private void newMessageWindow()throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(UdpSenderApplication.class.getResource("/new-message-view.fxml"));
 
-        Scene scene = new Scene(fxmlLoader.load(),400,500);
+    @FXML
+    private void newMessageWindow() throws IOException {
+
+        if (config == null) {
+            status.setText("Önce JSON yükleyin.");
+            return;
+        }
+
+        FXMLLoader loader = new FXMLLoader(
+                UdpSenderApplication.class.getResource("/new-message-view.fxml"));
+        Scene scene = new Scene(loader.load());   // load() önce çağrılmalı
+
+        newMessageController controller = loader.getController();
+        controller.setConfig(config);                      // aynı nesne paylaşılıyor
+
         Stage stage = new Stage();
+        stage.initModality(Modality.APPLICATION_MODAL);
         stage.setScene(scene);
         stage.setResizable(false);
         stage.showAndWait();

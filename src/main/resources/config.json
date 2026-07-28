@@ -7,7 +7,16 @@
     "text" : "12345678EFEF"
   },
   "timer" : {
-    "intervalMs" : 1000,
-    "timerEnabled" : false
-  }
+    "intervalMs" : 1000
+  },
+  "customMessages" : [ {
+    "name" : "efe",
+    "fields" : [ {
+      "bitLength" : "8 Bit",
+      "value" : "efefffff"
+    } ]
+  }, {
+    "name" : "asdasd",
+    "fields" : [ ]
+  } ]
 }
