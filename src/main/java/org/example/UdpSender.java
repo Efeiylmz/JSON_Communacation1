@@ -101,7 +101,7 @@ public class UdpSender {
 
 
 
-    private byte[] hexStringToByteArray(String hex){
+    public byte[] hexStringToByteArray(String hex){
 
 
         // Eğer boşluklu gelirse kaldır
