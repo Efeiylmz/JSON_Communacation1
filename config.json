@@ -4,32 +4,10 @@
     "port" : 5005
   },
   "message" : {
-    "text" : "12345678EFEF"
+    "text" : "D90315B3"
   },
   "timer" : {
     "intervalMs" : 1000
   },
-  "customMessages" : [ {
-    "name" : "Efe",
-    "fields" : [ {
-      "bitLength" : "8 Bit",
-      "value" : "255",
-      "hex" : "FF"
-    }, {
-      "bitLength" : "16 Bit",
-      "value" : "255",
-      "hex" : "00FF"
-    }, {
-      "bitLength" : "8 Bit",
-      "value" : "98",
-      "hex" : "62"
-    } ]
-  }, {
-    "name" : "deneme",
-    "fields" : [ {
-      "bitLength" : "16 Bit",
-      "value" : "6548",
-      "hex" : "1994"
-    } ]
-  } ]
+  "customMessages" : [ ]
 }

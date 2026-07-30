@@ -77,9 +77,28 @@ public class newMessageController {
     }
 
     @FXML
-    private void deleteMessage(){
+    private void deleteMessage() {
 
+        String name = savedMessages.getValue();
 
+        if (name == null || name.isBlank()) {
+            status.setText("Önce silinecek mesajı seçin.");
+            return;
+        }
+
+        CustomMessage found = findByName(name);
+
+        if (found == null) {
+            status.setText("Mesaj bulunamadı: " + name);
+            return;
+        }
+
+        config.getCustomMessages().remove(found);   // 1) bellekten çıkar
+        parser.saveJSONData(config);                // 2) diske yaz
+
+        refreshSavedMessages();                     // 3) ComboBox'ı yenile
+        clearForm();                                // 4) formu boşalt
+        status.setText(name + " silindi.");         // 5) en son mesajı yaz
     }
 
     // ---------- satır yönetimi ----------
@@ -151,7 +170,7 @@ public class newMessageController {
         String name = newMessageName.getText();
 
         if (name == null || name.isBlank()) {
-            status.setText("Mesaj adı boş olamaz.");
+            status.setText("Kaydedilmedi : Mesaj adı boş olamaz.");
             return;
         }
 
@@ -194,15 +213,33 @@ public class newMessageController {
 
         if (existing != null) {
             int index = config.getCustomMessages().indexOf(existing);
-            config.getCustomMessages().set(index, message);   // üzerine yaz
+            config.getCustomMessages().set(index, message);
         } else {
             config.getCustomMessages().add(message);
         }
 
-        parser.saveJSONData(config);
+        // --- YENİ: hex çıktısını aktif mesaj olarak ayarla ---
+        String combinedHex = HexUtil.build(message);
+
+        if (config.getMessage() == null) {
+            config.setMessage(new MessageConfig());
+        }
+
+        String previousText = config.getMessage().getText();   // rollback için sakla
+        config.getMessage().setText(combinedHex);
+        // ------------------------------------------------------
+
+//        if (parser.saveJSONData(config)) {
+//            config.getMessage().setText(previousText);         // geri al
+//            status.setText("Kaydedilemedi: dosyaya yazılamadı.");
+//            return;
+//        }
 
         refreshSavedMessages();
         savedMessages.setValue(message.getName());
-        status.setText("Kaydedildi → " + HexUtil.build(message));
+        status.setText("Kaydedildi ve aktif edildi → " + combinedHex);
+        config.getMessage().setText(combinedHex);
+        parser.saveJSONData(config);
+
     }
 }

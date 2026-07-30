@@ -47,7 +47,7 @@ public class Config {
         this.message = message;
     }
 
-    public void settimer(TimerConfig timer){
+    public void setTimer(TimerConfig timer){
 
         this.timer = timer;
     }

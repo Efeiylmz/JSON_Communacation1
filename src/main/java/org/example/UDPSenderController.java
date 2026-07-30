@@ -140,6 +140,12 @@ public class UDPSenderController {
         stage.setScene(scene);
         stage.setResizable(false);
         stage.showAndWait();
+
+        // pencere kapanırken senkronize et (garanti olsun diye)
+        if(config.getMessage() != null){
+            messageField.setText(config.getMessage().getText());
+    }
+
     }
 
 

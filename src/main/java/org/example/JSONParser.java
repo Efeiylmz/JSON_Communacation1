@@ -1,10 +1,4 @@
 package org.example;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.io.File;
-import java.io.InputStream;
-import java.util.ArrayList;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -13,7 +7,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-
 
 public class JSONParser {
 
@@ -59,37 +52,4 @@ public class JSONParser {
             e.printStackTrace();
         }
     }
-
-
-
-//        public void saveCustomMessage(CustomMessage message){
-//
-//            try {
-//
-//                File file = new File("src/main/resources/config.json");
-//
-//                ObjectMapper mapper = new ObjectMapper();
-//
-//                Config config;
-//
-//                if (file.exists() && file.length() > 0) {
-//                    config = mapper.readValue(file, Config.class);
-//                } else {
-//                    config = new Config();
-//                }
-//
-//                if (config.getCustomMessages() == null) {
-//                    config.setCustomMessages(new ArrayList<>());
-//                }
-//
-//                config.getCustomMessages().add(message);
-//
-//                mapper.writerWithDefaultPrettyPrinter().writeValue(file, config);
-//
-//            } catch (Exception e) {
-//
-//                e.printStackTrace();
-//
-//            }
-//        }
 }

@@ -1,7 +1,5 @@
 package org.example;
 
-import com.sun.jdi.ThreadReference;
-
 public class ConfigException  extends Exception{
 
     public ConfigException(String message){

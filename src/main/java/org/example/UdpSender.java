@@ -1,7 +1,4 @@
 package org.example;
-
-
-
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -65,7 +62,15 @@ public class UdpSender {
 
         streaming = true;
 
-        scheduler = Executors.newSingleThreadScheduledExecutor();
+        // önceden user-thread açılıyordu. şimdi Daemon thread açılıyor bu sayede pencere kapanınca jvm de kapanıyor.
+
+        scheduler = Executors.newSingleThreadScheduledExecutor(r ->{
+
+                    Thread t = new Thread(r);
+                    t.setDaemon(true);
+                    t.setName("udp-stream");
+                    return  t;
+                });
 
         streamTask = scheduler.scheduleAtFixedRate(
                 () -> send(config),
