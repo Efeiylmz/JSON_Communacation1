@@ -12,20 +12,20 @@ public class Config {
 
     private TimerConfig timer;
 
-    private List<CustomMessage> customMessages = new ArrayList<>();
+    private List<CustomMessage> customMessagesList = new ArrayList<>();
 
     public Config(){
 
     }
 
-    public List<CustomMessage> getCustomMessages(){
+    public List<CustomMessage> getCustomMessagesList(){
 
-        return customMessages;
+        return customMessagesList;
     }
 
-    public void setCustomMessages(List<CustomMessage> customMessages){
+    public void setCustomMessagesList(List<CustomMessage> customMessagesList){
 
-        this.customMessages = customMessages;
+        this.customMessagesList = customMessagesList;
     }
 
     public NetworkConfig getNetwork(){

@@ -8,11 +8,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-import java.util.ArrayList;
+public class NewMessageController {
 
-public class newMessageController {
 
-    private final JSONParser parser = new JSONParser();
 
     @FXML private VBox fieldsBox;
     @FXML private TextField newMessageName;
@@ -21,6 +19,8 @@ public class newMessageController {
     @FXML private Label status;
 
     private Config config;
+
+    private final CustomMessageService messageService = new CustomMessageService();
 
     // ---------- kurulum ----------
 
@@ -31,19 +31,15 @@ public class newMessageController {
 
     private void refreshSavedMessages() {
         savedMessages.getItems().clear();
-        if (config.getCustomMessages() == null) return;
-        for (CustomMessage m : config.getCustomMessages()) {
+        if (config.getCustomMessagesList() == null) return;
+        for (CustomMessage m : config.getCustomMessagesList()) {
             savedMessages.getItems().add(m.getName());
         }
     }
 
-    private CustomMessage findByName(String name) {
-        if (config.getCustomMessages() == null) return null;
-        for (CustomMessage m : config.getCustomMessages()) {
-            if (name.equals(m.getName())) return m;
-        }
-        return null;
-    }
+
+
+
 
     // ---------- kayıtlı mesajı geri yükleme ----------
 
@@ -53,7 +49,7 @@ public class newMessageController {
         String name = savedMessages.getValue();
         if (name == null) return;
 
-        CustomMessage found = findByName(name);
+        CustomMessage found = messageService.findByName(config, name);
         if (found == null) return;
 
         newMessageName.setText(found.getName());
@@ -64,7 +60,7 @@ public class newMessageController {
         }
 
         updatePreview();
-        status.setText(found.getFields().size() + " alan yüklendi.");
+        status.setText(found.getFields().size() + " field loaded.");
     }
 
     @FXML
@@ -82,23 +78,22 @@ public class newMessageController {
         String name = savedMessages.getValue();
 
         if (name == null || name.isBlank()) {
-            status.setText("Önce silinecek mesajı seçin.");
+            status.setText("Select a message first");
             return;
         }
 
-        CustomMessage found = findByName(name);
+        CustomMessage found = messageService.findByName(config,name);
 
         if (found == null) {
-            status.setText("Mesaj bulunamadı: " + name);
+            status.setText("Message not found: " + name);
             return;
         }
 
-        config.getCustomMessages().remove(found);   // 1) bellekten çıkar
-        parser.saveJSONData(config);                // 2) diske yaz
+        messageService.delete(config, found);
 
-        refreshSavedMessages();                     // 3) ComboBox'ı yenile
-        clearForm();                                // 4) formu boşalt
-        status.setText(name + " silindi.");         // 5) en son mesajı yaz
+        refreshSavedMessages();
+        clearForm();
+        status.setText(name + " deleted.");
     }
 
     // ---------- satır yönetimi ----------
@@ -114,20 +109,20 @@ public class newMessageController {
         HBox row = new HBox(15);
 
         ComboBox<String> comboBox = new ComboBox<>();
-        comboBox.getItems().addAll("8 Bit", "16 Bit");
+        comboBox.getItems().addAll("8 Bits", "16 Bits");
         comboBox.setPromptText("Bit length");
         comboBox.setValue(bitLength);
         comboBox.valueProperty().addListener((o, a, b) -> updatePreview());
 
         TextField valueField = new TextField(value);
-        valueField.setPromptText("255 veya 0xFF");
+        valueField.setPromptText("255 or 0xFF");
         valueField.textProperty().addListener((o, a, b) -> updatePreview());
 
         Label hexLabel = new Label("-");
         hexLabel.setPrefWidth(60);
 
         Button removeButton = new Button("X");
-        removeButton.setOnAction(e -> {
+        removeButton.setOnAction(e -> {//4Sels4n+78
             fieldsBox.getChildren().remove(row);
             updatePreview();
         });
@@ -151,6 +146,7 @@ public class newMessageController {
             Label hexLabel = (Label) row.getChildren().get(2);
 
             try {
+                // javanın kendi imkanlarıyla yapabiliyor muyuz
                 String hex = HexUtil.toHex(comboBox.getValue(), valueField.getText());
                 hexLabel.setText("→ " + hex);
                 combined.append(hex);
@@ -170,17 +166,16 @@ public class newMessageController {
         String name = newMessageName.getText();
 
         if (name == null || name.isBlank()) {
-            status.setText("Kaydedilmedi : Mesaj adı boş olamaz.");
+            status.setText("Failed to save : Message name cant be empty.");
             return;
         }
 
         CustomMessage message = new CustomMessage();
         message.setName(name.trim());
 
-        int rowNo = 0;
+        int rowNo = 0;  // magic number
 
         for (var node : fieldsBox.getChildren()) {
-
             if (!(node instanceof HBox row)) continue;
             rowNo++;
 
@@ -195,51 +190,21 @@ public class newMessageController {
                         hex));
 
             } catch (IllegalArgumentException e) {
-                status.setText(rowNo + ". satır: " + e.getMessage());
+                status.setText(rowNo + ". row: " + e.getMessage());
                 return;   // hiçbir şey kaydetme
             }
         }
 
         if (message.getFields().isEmpty()) {
-            status.setText("En az bir alan ekleyin.");
+            status.setText("Add at least 1 field.");
             return;
         }
 
-        if (config.getCustomMessages() == null) {
-            config.setCustomMessages(new ArrayList<>());
-        }
-
-        CustomMessage existing = findByName(message.getName());
-
-        if (existing != null) {
-            int index = config.getCustomMessages().indexOf(existing);
-            config.getCustomMessages().set(index, message);
-        } else {
-            config.getCustomMessages().add(message);
-        }
-
-        // --- YENİ: hex çıktısını aktif mesaj olarak ayarla ---
-        String combinedHex = HexUtil.build(message);
-
-        if (config.getMessage() == null) {
-            config.setMessage(new MessageConfig());
-        }
-
-        String previousText = config.getMessage().getText();   // rollback için sakla
-        config.getMessage().setText(combinedHex);
-        // ------------------------------------------------------
-
-//        if (parser.saveJSONData(config)) {
-//            config.getMessage().setText(previousText);         // geri al
-//            status.setText("Kaydedilemedi: dosyaya yazılamadı.");
-//            return;
-//        }
+        String combinedHex = messageService.Update(config, message);
 
         refreshSavedMessages();
         savedMessages.setValue(message.getName());
-        status.setText("Kaydedildi ve aktif edildi → " + combinedHex);
-        config.getMessage().setText(combinedHex);
-        parser.saveJSONData(config);
+        status.setText("Saved to JSON -> " + combinedHex);
 
     }
 }

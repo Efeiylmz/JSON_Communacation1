@@ -20,7 +20,7 @@
         <TextField fx:id="ipField"
                    promptText="1xx.1xx.1xx.1xx"/>
         <Region HBox.hgrow="ALWAYS"/>
-        <Button text="Yeni Mesaj"
+        <Button text="Mesajlar"
             onAction="#newMessageWindow"
         />
     </HBox>

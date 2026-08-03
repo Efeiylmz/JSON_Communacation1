@@ -1,4 +1,4 @@
-import org.example.*;
+package org.example;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,6 +28,8 @@ class UdpSenderTest {
 
         return config;
     }
+
+
     @Test
     void shouldIgnoreSpaces() {
 
@@ -44,6 +46,24 @@ class UdpSenderTest {
               (byte)0xCC
       };
       assertArrayEquals(expected,result);
+    }
+
+    @Test
+    void shouldHandleLowercaseHex() {
+        byte[] result = sender.hexStringToByteArray("aa bb");
+        byte[] expected = { (byte) 0xAA, (byte) 0xBB };
+        assertArrayEquals(expected, result);
+    }
+
+    @Test
+    void shouldThrowNullPointerExceptionForNullInput() {
+        assertThrows(NullPointerException.class, () -> sender.hexStringToByteArray(null));
+    }
+
+    @Test
+    void shouldReturnEmptyArrayForEmptyString() {
+        byte[] result = sender.hexStringToByteArray("");
+        assertArrayEquals(new byte[0], result);
     }
 
     @Test
@@ -66,17 +86,25 @@ class UdpSenderTest {
 
     }
 
+//    @Test
+//    void shouldHandleInvalidConfig(){
+//    Config config = createValidConfig();
+//    config.getNetwork().setIp("Invalid-ip");
+//    assertDoesNotThrow( ()-> sender.send(config) );
+//    }
+
     @Test
-    void shouldHandleInvalidConfig(){
-
-    Config config = createValidConfig();
-
-    config.getNetwork().setIp("Invalid-ip");
-
-    assertDoesNotThrow( ()-> sender.send(config) );
-
+    void sendShouldPropagateExceptionForOddLengthMessage() {
+        Config config = createValidConfig();
+        config.getMessage().setText("AA B"); //geçersiz
+        assertThrows(IllegalArgumentException.class, () -> sender.send(config));
     }
 
+    @Test
+    void shouldSendSuccessfullyWithValidConfig() {
+        Config config = createValidConfig();
+        assertDoesNotThrow(() -> sender.send(config));
+    }
 
 
 

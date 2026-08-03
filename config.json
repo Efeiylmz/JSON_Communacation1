@@ -1,13 +1,28 @@
 {
   "network" : {
-    "ip" : "192.168.70.68",
+    "ip" : "192.168183.130",
     "port" : 5005
   },
   "message" : {
-    "text" : "D90315B3"
+    "text" : "0D2DFA"
   },
   "timer" : {
     "intervalMs" : 1000
   },
-  "customMessages" : [ ]
+  "customMessagesList" : [ {
+    "name" : "test",
+    "fields" : [ {
+      "bitLength" : "8 Bits",
+      "value" : "13",
+      "hex" : "0D"
+    }, {
+      "bitLength" : "8 Bits",
+      "value" : "45",
+      "hex" : "2D"
+    }, {
+      "bitLength" : "8 Bits",
+      "value" : "250",
+      "hex" : "FA"
+    } ]
+  } ]
 }

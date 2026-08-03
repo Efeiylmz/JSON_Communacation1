@@ -10,6 +10,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 
 public class UDPSenderController {
 
@@ -34,22 +36,21 @@ public class UDPSenderController {
     @FXML
     private Button sendPeriodicButton;
 
-
+        // guideki fieldlara yazılı değerleri config nesnesine kaydediyor.
     private void updateConfigFromGui(){
 
         config.getNetwork().setIp(ipField.getText());
         config.getNetwork().setPort(Integer.parseInt(portField.getText()));
         config.getMessage().setText(messageField.getText());
         config.getTimer().setIntervalMs(Integer.parseInt(intervalField.getText()));
-
     }
+
+
     @FXML
     private void loadJson(){
 
         try {
             Config loaded = parser.getJSONdata();
-
-            // Buraya geldiysek yükleme başarılı — ancak şimdi atıyoruz
             config = loaded;
 
             ipField.setText(config.getNetwork().getIp());
@@ -67,48 +68,70 @@ public class UDPSenderController {
 
     @FXML
     private void saveJson(){
-
         if (config == null) {
             status.setText("Load a JSON file first.");
             return;
         }
-
-        updateConfigFromGui();
+        try {
+            updateConfigFromGui();
+        } catch (NumberFormatException e) {
+            status.setText("Invalid port or interval value.");
+            return;
+        }
         parser.saveJSONData(config);
-
         status.setText("Status : New JSON configurations updated.....!");
-
     }
 
     @FXML
-    private void sendOnce(){
+    private void sendOnce() {
 
         if (config == null) {
             status.setText("Load a JSON file first.");
             return;
         }
 
-        updateConfigFromGui();
-        sender.send(config);
-        status.setText("Status : Packet is sent!");
+        try {
 
+            updateConfigFromGui();
+            sender.send(config);
+
+            status.setText("Packet sent.");
+
+        } catch (UnknownHostException e) {
+
+            status.setText("Invalid IP address.");
+
+        } catch (SocketException e) {
+
+            status.setText("Socket could not be created.");
+
+        } catch (IllegalArgumentException e) {
+
+            status.setText(e.getMessage());
+
+        } catch (IOException e) {
+
+            status.setText("Packet could not be sent.");
+        }
     }
+
     @FXML
     private void sendPeriodic(){
 
         if (streaming==false) {
-
             if (config == null) {
                 status.setText("Load a JSON file first.");
                 return;
             }
-
-            updateConfigFromGui();
-
+            try {
+                updateConfigFromGui();
+            } catch (NumberFormatException e) {
+                status.setText("Invalid port or interval value.");
+                return;
+            }
             streaming = true;
             sendPeriodicButton.setText("STOP");
             sender.startStream(config);
-
         }else{
 
             streaming=false;
@@ -124,7 +147,7 @@ public class UDPSenderController {
     private void newMessageWindow() throws IOException {
 
         if (config == null) {
-            status.setText("Önce JSON yükleyin.");
+            status.setText("Load a JSON file first.");
             return;
         }
 
@@ -132,7 +155,7 @@ public class UDPSenderController {
                 UdpSenderApplication.class.getResource("/new-message-view.fxml"));
         Scene scene = new Scene(loader.load());   // load() önce çağrılmalı
 
-        newMessageController controller = loader.getController();
+        NewMessageController controller = loader.getController();
         controller.setConfig(config);                      // aynı nesne paylaşılıyor
 
         Stage stage = new Stage();

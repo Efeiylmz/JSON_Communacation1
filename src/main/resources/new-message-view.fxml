@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="org.example.newMessageController"
+            fx:controller="org.example.NewMessageController"
             prefHeight="800.0" prefWidth="550">
 
     <top>
@@ -21,12 +21,14 @@
                           promptText="Seçiniz"
                           onAction="#loadSelectedMessage"/>
                 <Button text="Yeni" onAction="#clearForm"/>
+                <Button text="Mesajı Sil" onAction="#deleteMessage"/>
+
             </HBox>
 
             <HBox spacing="10" alignment="CENTER_LEFT">
                 <Label text="Mesaj adı" prefWidth="80"/>
                 <TextField fx:id="newMessageName" maxWidth="150"/>
-                <Button text="Mesajı Sil" onAction="#deleteMessage"/>
+
             </HBox>
         </VBox>
     </top>

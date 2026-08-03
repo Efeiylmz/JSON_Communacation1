@@ -1,7 +1,6 @@
 package org.example;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
+import java.io.IOException;
+import java.net.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -16,7 +15,7 @@ public class UdpSender {
     private ScheduledExecutorService scheduler;
     private ScheduledFuture<?> streamTask;
 
-    public void send(Config config){
+    public void send(Config config) throws IOException {
 
         try(DatagramSocket socket = createSocket()){
 
@@ -26,12 +25,11 @@ public class UdpSender {
 
             System.out.println("Packet sent.");
 
-        }   catch (Exception e) {
-            e.printStackTrace();
-            }
+        }
     }
 
-    private DatagramPacket createPacket(Config config) throws Exception {
+    private DatagramPacket createPacket(Config config)
+            throws UnknownHostException {
 
         byte[] data =
                 hexStringToByteArray(config.getMessage().getText());
@@ -44,13 +42,10 @@ public class UdpSender {
                 data.length,
                 address,
                 config.getNetwork().getPort());
-
     }
 
-    private DatagramSocket createSocket() throws Exception {
-
+    private DatagramSocket createSocket() throws SocketException {
         return new DatagramSocket();
-
     }
 
 
@@ -72,12 +67,17 @@ public class UdpSender {
                     return  t;
                 });
 
-        streamTask = scheduler.scheduleAtFixedRate(
-                () -> send(config),
-                0,
+        streamTask = scheduler.scheduleAtFixedRate(() -> {
+
+                    try {
+                        send(config);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                }, 0,
                 config.getTimer().getIntervalMs(),
-                TimeUnit.MILLISECONDS
-        );
+                TimeUnit.MILLISECONDS);
     }
 
     public synchronized void stopStream() {
@@ -122,9 +122,7 @@ public class UdpSender {
 
             data[i/2] = (byte) Integer.parseInt(byteString,16);
         }
-
         return data;
-
     }
 
 }
