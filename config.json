@@ -1,10 +1,10 @@
 {
   "network" : {
-    "ip" : "192.168183.130",
+    "ip" : "192.168.183.130",
     "port" : 5005
   },
   "message" : {
-    "text" : "0D2DFA"
+    "text" : "DFB4A"
   },
   "timer" : {
     "intervalMs" : 1000
@@ -12,17 +12,30 @@
   "customMessagesList" : [ {
     "name" : "test",
     "fields" : [ {
-      "bitLength" : "8 Bits",
-      "value" : "13",
-      "hex" : "0D"
+      "bitLength" : "4 Bits",
+      "value" : "5",
+      "hex" : "5"
     }, {
       "bitLength" : "8 Bits",
       "value" : "45",
       "hex" : "2D"
     }, {
       "bitLength" : "8 Bits",
-      "value" : "250",
-      "hex" : "FA"
-    } ]
+      "value" : "251",
+      "hex" : "FB"
+    } ],
+    "endianness" : "LITTLE"
+  }, {
+    "name" : "test2",
+    "fields" : [ {
+      "bitLength" : "1 Bits",
+      "value" : "0",
+      "hex" : "0"
+    }, {
+      "bitLength" : "1 Bits",
+      "value" : "1",
+      "hex" : "1"
+    } ],
+    "endianness" : "BIG"
   } ]
 }

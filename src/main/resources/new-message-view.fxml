@@ -15,19 +15,21 @@
             </padding>
 
             <HBox spacing="10" alignment="CENTER_LEFT">
-                <Label text="Kayıtlı mesaj" prefWidth="80"/>
+                <Label text="Saved mesagges" prefWidth="80"/>
                 <ComboBox fx:id="savedMessages"
                           prefWidth="150"
                           promptText="Seçiniz"
                           onAction="#loadSelectedMessage"/>
-                <Button text="Yeni" onAction="#clearForm"/>
-                <Button text="Mesajı Sil" onAction="#deleteMessage"/>
+                <Button text="New Message" onAction="#clearForm"/>
+                <Button text="Delete Message" onAction="#deleteMessage"/>
 
             </HBox>
 
             <HBox spacing="10" alignment="CENTER_LEFT">
-                <Label text="Mesaj adı" prefWidth="80"/>
+                <Label text="Name" prefWidth="80"/>
                 <TextField fx:id="newMessageName" maxWidth="150"/>
+                <Label text="Byte Format" prefWidth="80"/>
+                <ComboBox fx:id="endianness" prefWidth="150"/>
 
             </HBox>
         </VBox>
@@ -48,7 +50,7 @@
             </padding>
 
             <HBox spacing="10" alignment="CENTER_LEFT">
-                <Label text="Oluşan mesaj:"/>
+                <Label text="Message Created:"/>
                 <Label fx:id="preview" text="-"/>
             </HBox>
 
@@ -56,8 +58,10 @@
                 <Button text="+" onAction="#addNewField"/>
                 <Region HBox.hgrow="ALWAYS"/>
                 <Label fx:id="status"/>
-                <Button text="KAYDET" onAction="#saveMessages"/>
+                <Button text="SAVE" onAction="#saveMessages"/>
             </HBox>
+
+
         </VBox>
     </bottom>
 

@@ -26,6 +26,8 @@ class UdpSenderTest {
         config.setMessage(message);
         config.setTimer(timer);
 
+
+
         return config;
     }
 
@@ -33,19 +35,19 @@ class UdpSenderTest {
     @Test
     void shouldIgnoreSpaces() {
 
-      String hex = "AA BB CC";
+        String hex = "AA BB CC";
 
-      UdpSender sender = new UdpSender();
+        UdpSender sender = new UdpSender();
 
-      byte [] result = sender.hexStringToByteArray(hex);
+        byte [] result = sender.hexStringToByteArray(hex);
 
-      byte [] expected = {
+        byte [] expected = {
 
-              (byte)0xAA,
-              (byte)0xBB,
-              (byte)0xCC
-      };
-      assertArrayEquals(expected,result);
+                (byte)0xAA,
+                (byte)0xBB,
+                (byte)0xCC
+        };
+        assertArrayEquals(expected,result);
     }
 
     @Test
@@ -109,5 +111,3 @@ class UdpSenderTest {
 
 
 }
-
-

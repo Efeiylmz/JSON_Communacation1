@@ -6,8 +6,10 @@ import java.util.List;
 public class CustomMessage {
 
     private String name;
-
     private List<CustomMessageField> fields = new ArrayList<>();
+
+    // "BIG" ya da "LITTLE" - mesaj başına tek bir format, varsayılan Big Endian (kanonik)
+    private String endianness = "BIG";
 
     public CustomMessage(){
 
@@ -27,6 +29,14 @@ public class CustomMessage {
 
     public void setFields(List<CustomMessageField> fields){
         this.fields = fields;
+    }
+
+    public String getEndianness(){
+        return endianness;
+    }
+
+    public void setEndianness(String endianness){
+        this.endianness = endianness;
     }
 
 }
