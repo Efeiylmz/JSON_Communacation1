@@ -4,7 +4,7 @@
     "port" : 5005
   },
   "message" : {
-    "text" : "DFB4A"
+    "text" : "500C0"
   },
   "timer" : {
     "intervalMs" : 1000
@@ -16,15 +16,15 @@
       "value" : "5",
       "hex" : "5"
     }, {
-      "bitLength" : "8 Bits",
-      "value" : "45",
-      "hex" : "2D"
+      "bitLength" : "10 Bits",
+      "value" : "12",
+      "hex" : "00C"
     }, {
-      "bitLength" : "8 Bits",
-      "value" : "251",
-      "hex" : "FB"
+      "bitLength" : "2 Bits",
+      "value" : "0",
+      "hex" : "0"
     } ],
-    "endianness" : "LITTLE"
+    "endianness" : "BIG"
   }, {
     "name" : "test2",
     "fields" : [ {
@@ -35,6 +35,26 @@
       "bitLength" : "1 Bits",
       "value" : "1",
       "hex" : "1"
+    } ],
+    "endianness" : "BIG"
+  }, {
+    "name" : "Efe",
+    "fields" : [ {
+      "bitLength" : "1 Bits",
+      "value" : "0",
+      "hex" : "0"
+    }, {
+      "bitLength" : "6 Bits",
+      "value" : "63",
+      "hex" : "3F"
+    }, {
+      "bitLength" : "8 Bits",
+      "value" : "250",
+      "hex" : "FA"
+    }, {
+      "bitLength" : "1 Bits",
+      "value" : "0",
+      "hex" : "0"
     } ],
     "endianness" : "BIG"
   } ]

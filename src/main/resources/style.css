@@ -1,0 +1,123 @@
+/* Uygulama genelinde tek/tutarlı bir font ailesi — varsayılan sistem fontu yerine.
+   .root hem ana pencerede hem Yeni Mesaj penceresinde otomatik olarak scene'in
+   kök node'una eklenir, bu yüzden her iki pencereyi de kapsar. */
+.root {
+    -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Status etiketi için renkler: setStatus(...) çağrıldığında JavaFX kontrolüne
+   .status-success ya da .status-error style class'ı ekleniyor. */
+
+.status-success {
+    -fx-text-fill: #2e7d32;
+    -fx-font-weight: bold;
+}
+
+.status-error {
+    -fx-text-fill: #c62828;
+    -fx-font-weight: bold;
+}
+
+/* Buton hiyerarşisi: ana aksiyonlar (Send Once, SAVE, aktif Stream) vurgulu mavi,
+   yıkıcı aksiyonlar (Delete Message, satır silme) kırmızı, diğerleri varsayılan gri. */
+
+.button-primary {
+    -fx-background-color: #1565c0;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4;
+}
+.button-primary:hover {
+    -fx-background-color: #0d47a1;
+}
+
+.button-danger {
+    -fx-background-color: #c62828;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4;
+}
+.button-danger:hover {
+    -fx-background-color: #8e0000;
+}
+
+/* satır bazlı küçük "X" silme butonu için daha hafif bir varyant */
+.button-remove {
+    -fx-background-color: transparent;
+    -fx-text-fill: #c62828;
+    -fx-font-weight: bold;
+    -fx-border-color: #c62828;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+}
+.button-remove:hover {
+    -fx-background-color: #c62828;
+    -fx-text-fill: white;
+}
+
+/* İlgili alanları görsel olarak gruplamak için hafif çerçeveli "kart" görünümü */
+
+.panel {
+    -fx-background-color: #f5f5f5;
+    -fx-background-radius: 6;
+    -fx-border-color: #dcdcdc;
+    -fx-border-radius: 6;
+    -fx-border-width: 1;
+    -fx-padding: 15;
+}
+
+.panel-title {
+    -fx-font-size: 1.05em;
+    -fx-font-weight: bold;
+    -fx-text-fill: #555555;
+}
+
+/* Ana pencereyi (udp-sender-view.fxml) biraz daha büyük ölçekte göstermek için;
+   font-size arttıkça çoğu Modena kontrolü (buton, textfield, combobox) buna göre büyür. */
+.main-window {
+    -fx-font-size: 16px;
+}
+
+/* Aynı ölçekleme, Yeni Mesaj penceresi (new-message-view.fxml) için */
+.message-window {
+    -fx-font-size: 16px;
+}
+
+/* TextField/ComboBox: hafif yuvarlatılmış köşe + odaklanınca ince mavi vurgu.
+   Kontrol tipini hedeflediği için tek tanım hem ana pencereyi hem Yeni Mesaj
+   penceresini (ve satır bazlı dinamik alanları) kapsıyor. */
+.text-field, .combo-box {
+    -fx-background-radius: 4;
+    -fx-border-radius: 4;
+    -fx-border-color: #cfcfcf;
+    -fx-border-width: 1;
+}
+
+.text-field:focused, .combo-box:focused {
+    -fx-border-color: #1565c0;
+    -fx-border-width: 1.5;
+}
+
+/* Bit doluluk barı: her hücre tek bir biti temsil eder.
+   filled = alanlarla doldurulmuş bit, needed = mevcut byte'ı tamamlamak için
+   eksik bit (kullanıcıyı tek sayıda hex/bit bırakmaması için uyarır), empty = sırası
+   henüz gelmemiş, önemsiz bit. */
+.bit-cell {
+    -fx-min-width: 16;
+    -fx-min-height: 16;
+    -fx-max-width: 16;
+    -fx-max-height: 16;
+    -fx-background-radius: 2;
+}
+
+.bit-cell-filled {
+    -fx-background-color: #43a047;
+}
+
+.bit-cell-needed {
+    -fx-background-color: #c62828;
+}
+
+.bit-cell-empty {
+    -fx-background-color: #d0d0d0;
+}

@@ -1,5 +1,6 @@
 package org.example;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -36,13 +37,45 @@ public class UDPSenderController {
     @FXML
     private Button sendPeriodicButton;
 
-        // guideki fieldlara yazılı değerleri config nesnesine kaydediyor.
+    // guideki fieldlara yazılı değerleri config nesnesine kaydediyor.
     private void updateConfigFromGui(){
 
         config.getNetwork().setIp(ipField.getText());
         config.getNetwork().setPort(Integer.parseInt(portField.getText()));
         config.getMessage().setText(messageField.getText());
         config.getTimer().setIntervalMs(Integer.parseInt(intervalField.getText()));
+    }
+
+    // status etiketini metinle birlikte başarı(yeşil)/hata(kırmızı) rengine boyar
+    private void setStatus(String message, boolean isError) {
+        status.setText(message);
+        status.getStyleClass().removeAll("status-success", "status-error");
+        if (message != null && !message.isBlank()) {
+            status.getStyleClass().add(isError ? "status-error" : "status-success");
+        }
+    }
+
+    // akış aktifken buton kırmızı (STOP), aktif değilken mavi (primary) görünür
+    private void setStreamButtonActive(boolean active) {
+        sendPeriodicButton.getStyleClass().removeAll("button-primary", "button-danger");
+        sendPeriodicButton.getStyleClass().add(active ? "button-danger" : "button-primary");
+    }
+
+    // config'in gönderilebilir olup olmadığını kontrol eder (hex geçerli mi, IP çözülebiliyor mu);
+    // geçersizse status'u kırmızı hata mesajıyla günceller ve false döner. sendOnce() ve
+    // sendPeriodic() ikisi de göndermeden/akışı başlatmadan önce bunu çağırıyor.
+    private boolean validateConfigForSend() {
+        try {
+            sender.validate(config);
+            return true;
+        } catch (UnknownHostException e) {
+            setStatus("Invalid IP address.", true);
+        } catch (IllegalArgumentException e) {
+            setStatus(e.getMessage(), true);
+        } catch (IOException e) {
+            setStatus("Packet could not be prepared: " + e.getMessage(), true);
+        }
+        return false;
     }
 
 
@@ -58,10 +91,10 @@ public class UDPSenderController {
             messageField.setText(config.getMessage().getText());
             intervalField.setText(String.valueOf(config.getTimer().getIntervalMs()));
 
-            status.setText("Status : JSON settings uploaded.....!");
+            setStatus("Status : JSON settings uploaded.....!", false);
 
         } catch (ConfigException e) {
-            status.setText("Status : " + e.getMessage());
+            setStatus("Status : " + e.getMessage(), true);
             e.printStackTrace();   // konsolda tam yığın izi kalsın
         }
     }
@@ -69,49 +102,45 @@ public class UDPSenderController {
     @FXML
     private void saveJson(){
         if (config == null) {
-            status.setText("Load a JSON file first.");
+            setStatus("Load a JSON file first.", true);
             return;
         }
         try {
             updateConfigFromGui();
         } catch (NumberFormatException e) {
-            status.setText("Invalid port or interval value.");
+            setStatus("Invalid port or interval value.", true);
             return;
         }
         parser.saveJSONData(config);
-        status.setText("Status : New JSON configurations updated.....!");
+        setStatus("Status : New JSON configurations updated.....!", false);
     }
 
     @FXML
     private void sendOnce() {
 
         if (config == null) {
-            status.setText("Load a JSON file first.");
+            setStatus("Load a JSON file first.", true);
             return;
         }
 
         try {
-
             updateConfigFromGui();
+        } catch (NumberFormatException e) {
+            setStatus("Invalid port or interval value.", true);
+            return;
+        }
+
+        if (!validateConfigForSend()) {
+            return;
+        }
+
+        try {
             sender.send(config);
-
-            status.setText("Packet sent.");
-
-        } catch (UnknownHostException e) {
-
-            status.setText("Invalid IP address.");
-
+            setStatus("Packet sent.", false);
         } catch (SocketException e) {
-
-            status.setText("Socket could not be created.");
-
-        } catch (IllegalArgumentException e) {
-
-            status.setText(e.getMessage());
-
+            setStatus("Socket could not be created.", true);
         } catch (IOException e) {
-
-            status.setText("Packet could not be sent.");
+            setStatus("Packet could not be sent.", true);
         }
     }
 
@@ -120,40 +149,61 @@ public class UDPSenderController {
 
         if (streaming==false) {
             if (config == null) {
-                status.setText("Load a JSON file first.");
+                setStatus("Load a JSON file first.", true);
                 return;
             }
             try {
                 updateConfigFromGui();
             } catch (NumberFormatException e) {
-                status.setText("Invalid port or interval value.");
+                setStatus("Invalid port or interval value.", true);
                 return;
             }
+
+            if (!validateConfigForSend()) {
+                return;
+            }
+
             streaming = true;
             sendPeriodicButton.setText("STOP");
-            sender.startStream(config);
+            setStreamButtonActive(true);
+            sender.startStream(config, this::handleStreamError);
+            setStatus("Streaming STARTED...", false);
         }else{
 
             streaming=false;
             sendPeriodicButton.setText("Send Periodically");
+            setStreamButtonActive(false);
             sender.stopStream();
-            status.setText("Streaming STOPPED...");
+            setStatus("Streaming STOPPED...", false);
 
         }
 
+    }
+
+    // sender.startStream() sırasında arka plan thread'inde bir hata olursa çağrılır.
+    // JavaFX kontrollerine sadece FX Application Thread'inden dokunulabildiği için
+    // Platform.runLater ile UI güncellemesi ana thread'e taşınıyor.
+    private void handleStreamError(String message) {
+        Platform.runLater(() -> {
+            streaming = false;
+            sendPeriodicButton.setText("Send Periodically");
+            setStreamButtonActive(false);
+            setStatus("Streaming stopped: " + message, true);
+        });
     }
 
     @FXML
     private void newMessageWindow() throws IOException {
 
         if (config == null) {
-            status.setText("Load a JSON file first.");
+            setStatus("Load a JSON file first.", true);
             return;
         }
 
         FXMLLoader loader = new FXMLLoader(
                 UdpSenderApplication.class.getResource("/new-message-view.fxml"));
         Scene scene = new Scene(loader.load());   // load() önce çağrılmalı
+        scene.getStylesheets().add(UdpSenderApplication.class.getResource("/style.css").toExternalForm());
 
         NewMessageController controller = loader.getController();
         controller.setConfig(config);                      // aynı nesne paylaşılıyor
@@ -167,7 +217,7 @@ public class UDPSenderController {
         // pencere kapanırken senkronize et (garanti olsun diye)
         if(config.getMessage() != null){
             messageField.setText(config.getMessage().getText());
-    }
+        }
 
     }
 

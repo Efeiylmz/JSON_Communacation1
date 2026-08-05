@@ -44,12 +44,27 @@ public class UdpSender {
                 config.getNetwork().getPort());
     }
 
+    // Paketi gerçekten göndermeden hazırlamayı dener; mesaj/hex ya da IP geçersizse
+    // aynı exception'ları (IllegalArgumentException, UnknownHostException) fırlatır.
+    // sendOnce() ve startStream() ikisi de göndermeden/akışı başlatmadan önce bunu
+    // çağırır; böylece send() ve periyodik görev sadece "geçerliliği bilinen bir
+    // paketi oluştur ve gönder" işine odaklanır.
+    public void validate(Config config) throws IOException {
+        createPacket(config);
+    }
+
     private DatagramSocket createSocket() throws SocketException {
         return new DatagramSocket();
     }
 
 
     public synchronized void startStream(Config config) {
+        startStream(config, null);
+    }
+
+    // onError: periyodik gönderim sırasında bir hata olursa (bozuk hex, geçersiz IP, IO hatası...)
+    // çağrılır. Arka plan thread'inden çağrıldığı için UI tarafı bunu FX thread'ine taşımalı.
+    public synchronized void startStream(Config config, java.util.function.Consumer<String> onError) {
 
         if (streaming) {
             return;
@@ -61,18 +76,24 @@ public class UdpSender {
 
         scheduler = Executors.newSingleThreadScheduledExecutor(r ->{
 
-                    Thread t = new Thread(r);
-                    t.setDaemon(true);
-                    t.setName("udp-stream");
-                    return  t;
-                });
+            Thread t = new Thread(r);
+            t.setDaemon(true);
+            t.setName("udp-stream");
+            return  t;
+        });
 
         streamTask = scheduler.scheduleAtFixedRate(() -> {
 
                     try {
                         send(config);
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    } catch (Exception e) {
+                        // startStream() öncesi validate() geçtiği için normalde buraya
+                        // düşülmez; yine de gerçek bir I/O sorunu (ör. ağ o an ulaşılamaz
+                        // olursa) ya da beklenmedik bir durum için güvenlik ağı olarak kalıyor.
+                        stopStream();
+                        if (onError != null) {
+                            onError.accept(e.getMessage() != null ? e.getMessage() : e.getClass().getSimpleName());
+                        }
                     }
 
                 }, 0,

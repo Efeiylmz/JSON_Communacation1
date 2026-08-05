@@ -14,6 +14,7 @@ public class UdpSenderApplication extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(UdpSenderApplication.class.getResource("/udp-sender-view.fxml"));
 
         Scene scene = new Scene(fxmlLoader.load());
+        scene.getStylesheets().add(UdpSenderApplication.class.getResource("/style.css").toExternalForm());
         stage.setTitle("UDP Sender");
         stage.setResizable(false);
         stage.setScene(scene);

@@ -6,7 +6,8 @@
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.example.NewMessageController"
-            prefHeight="800.0" prefWidth="550">
+            styleClass="message-window"
+            prefHeight="900.0" prefWidth="650.0">
 
     <top>
         <VBox spacing="10">
@@ -14,32 +15,40 @@
                 <Insets top="20" right="20" bottom="10" left="20"/>
             </padding>
 
-            <HBox spacing="10" alignment="CENTER_LEFT">
-                <Label text="Saved mesagges" prefWidth="80"/>
-                <ComboBox fx:id="savedMessages"
-                          prefWidth="150"
-                          promptText="Seçiniz"
-                          onAction="#loadSelectedMessage"/>
-                <Button text="New Message" onAction="#clearForm"/>
-                <Button text="Delete Message" onAction="#deleteMessage"/>
+            <VBox styleClass="panel" spacing="12">
+                <Label text="Message" styleClass="panel-title"/>
 
-            </HBox>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Saved mesagges" prefWidth="125"/>
+                    <ComboBox fx:id="savedMessages"
+                              prefWidth="150"
+                              promptText="Seçiniz"
+                              onAction="#loadSelectedMessage"/>
+                    <Button text="New Message" onAction="#clearForm"/>
+                    <Button text="Delete Message" styleClass="button-danger" onAction="#deleteMessage"/>
 
-            <HBox spacing="10" alignment="CENTER_LEFT">
-                <Label text="Name" prefWidth="80"/>
-                <TextField fx:id="newMessageName" maxWidth="150"/>
-                <Label text="Byte Format" prefWidth="80"/>
-                <ComboBox fx:id="endianness" prefWidth="150"/>
+                </HBox>
 
-            </HBox>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Name" prefWidth="125"/>
+                    <TextField fx:id="newMessageName" maxWidth="150"/>
+                    <Label text="Byte Format" prefWidth="125"/>
+                    <ComboBox fx:id="endianness" prefWidth="150"/>
+
+                </HBox>
+            </VBox>
         </VBox>
     </top>
 
     <center>
-        <VBox fx:id="fieldsBox" spacing="5">
+        <VBox spacing="0">
             <padding>
-                <Insets top="0" right="20" bottom="0" left="20"/>
+                <Insets top="10" right="20" bottom="10" left="20"/>
             </padding>
+            <VBox styleClass="panel" spacing="12" VBox.vgrow="ALWAYS">
+                <Label text="Fields" styleClass="panel-title"/>
+                <VBox fx:id="fieldsBox" spacing="5"/>
+            </VBox>
         </VBox>
     </center>
 
@@ -48,6 +57,13 @@
             <padding>
                 <Insets top="10" right="20" bottom="20" left="20"/>
             </padding>
+
+            <Label text="Bit Occupancy (Total 32 bit)"/>
+            <HBox spacing="12" alignment="CENTER_LEFT">
+
+                <HBox fx:id="bitBar" spacing="10" alignment="CENTER_LEFT"/>
+            </HBox>
+
 
             <HBox spacing="10" alignment="CENTER_LEFT">
                 <Label text="Message Created:"/>
@@ -58,7 +74,7 @@
                 <Button text="+" onAction="#addNewField"/>
                 <Region HBox.hgrow="ALWAYS"/>
                 <Label fx:id="status"/>
-                <Button text="SAVE" onAction="#saveMessages"/>
+                <Button text="SAVE" styleClass="button-primary" onAction="#saveMessages"/>
             </HBox>
 
 

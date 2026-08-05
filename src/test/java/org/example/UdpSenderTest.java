@@ -108,6 +108,26 @@ class UdpSenderTest {
         assertDoesNotThrow(() -> sender.send(config));
     }
 
+    // ---------- validate ----------
 
+    @Test
+    void validate_shouldNotThrowForValidConfig() {
+        Config config = createValidConfig();
+        assertDoesNotThrow(() -> sender.validate(config));
+    }
+
+    @Test
+    void validate_shouldThrowForOddLengthMessage() {
+        Config config = createValidConfig();
+        config.getMessage().setText("AA B"); //geçersiz
+        assertThrows(IllegalArgumentException.class, () -> sender.validate(config));
+    }
+
+    @Test
+    void validate_shouldThrowForInvalidHexCharacters() {
+        Config config = createValidConfig();
+        config.getMessage().setText("ZZ"); //geçersiz
+        assertThrows(NumberFormatException.class, () -> sender.validate(config));
+    }
 
 }

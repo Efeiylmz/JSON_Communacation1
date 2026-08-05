@@ -7,63 +7,72 @@
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="org.example.UDPSenderController"
-      prefWidth="500.0"
-      prefHeight="400.0"
+      styleClass="main-window"
+      prefWidth="650.0"
+      prefHeight="650.0"
       spacing="20">
 
     <padding>
         <Insets top="20" right="20" bottom="20" left="20"/>
     </padding>
 
-    <HBox>
-        <Label text="IP Address" prefWidth="80"/>
-        <TextField fx:id="ipField"
-                   promptText="1xx.1xx.1xx.1xx"/>
-        <Region HBox.hgrow="ALWAYS"/>
-        <Button text="Show Messages"
-            onAction="#newMessageWindow"
-        />
-    </HBox>
-
-    <HBox>
-        <Label text="Port" prefWidth="80"/>
-        <TextField fx:id="portField"
-                   promptText="5005"/>
-    </HBox>
-
-    <HBox>
-        <Label text="Message" prefWidth="80"/>
-        <TextField fx:id="messageField"
-                   promptText="12EA56FA78"/>
-    </HBox>
-
-    <HBox>
-        <Label text="Interval Time" prefWidth="80"/>
-        <TextField fx:id="intervalField"
-                   promptText="1000"/>
-        <Label text="ms"/>
-    </HBox>
-
-    <Separator/>
-
-    <HBox spacing="40" alignment="CENTER_LEFT">
+    <VBox styleClass="panel" spacing="12">
+        <Label text="Connection &amp; Message" styleClass="panel-title"/>
 
         <HBox spacing="10">
-            <Button text="Load JSON"
-                    onAction="#loadJson"/>
-            <Button text="Save JSON"
-                    onAction="#saveJson"/>
+            <Label text="IP Address" prefWidth="125"/>
+            <TextField fx:id="ipField"
+                       promptText="1xx.1xx.1xx.1xx"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Show Messages"
+                    onAction="#newMessageWindow"
+            />
         </HBox>
 
         <HBox spacing="10">
-            <Button text="Send Once"
-                    onAction="#sendOnce"/>
-            <Button fx:id="sendPeriodicButton"
-                    text="Send Periodically"
-                    onAction="#sendPeriodic"/>
+            <Label text="Port" prefWidth="125"/>
+            <TextField fx:id="portField"
+                       promptText="5005"/>
         </HBox>
 
-    </HBox>
+        <HBox spacing="10">
+            <Label text="Message" prefWidth="125"/>
+            <TextField fx:id="messageField"
+                       promptText="12EA56FA78"/>
+        </HBox>
+
+        <HBox spacing="10">
+            <Label text="Interval Time" prefWidth="125"/>
+            <TextField fx:id="intervalField"
+                       promptText="1000"/>
+            <Label text="ms"/>
+        </HBox>
+    </VBox>
+
+    <VBox styleClass="panel" spacing="12">
+        <Label text="Actions" styleClass="panel-title"/>
+
+        <HBox spacing="40" alignment="CENTER_LEFT">
+
+            <HBox spacing="10">
+                <Button text="Load JSON"
+                        onAction="#loadJson"/>
+                <Button text="Save JSON"
+                        onAction="#saveJson"/>
+            </HBox>
+
+            <HBox spacing="10">
+                <Button text="Send Once"
+                        styleClass="button-primary"
+                        onAction="#sendOnce"/>
+                <Button fx:id="sendPeriodicButton"
+                        text="Send Periodically"
+                        styleClass="button-primary"
+                        onAction="#sendPeriodic"/>
+            </HBox>
+
+        </HBox>
+    </VBox>
 
     <Label fx:id="status"
            text="Status: Ready"/>
