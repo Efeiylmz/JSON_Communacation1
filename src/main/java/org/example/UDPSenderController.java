@@ -12,9 +12,13 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.SocketException;
+import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.Objects;
 
 public class UDPSenderController {
+
+    private static final System.Logger LOGGER = System.getLogger(UDPSenderController.class.getName());
 
     private Config config;
 
@@ -36,6 +40,14 @@ public class UDPSenderController {
     private Label status;
     @FXML
     private Button sendPeriodicButton;
+    @FXML
+    private Button sendOnceButton;
+    @FXML
+    private Button loadJsonButton;
+    @FXML
+    private Button saveJsonButton;
+    @FXML
+    private Button showMessagesButton;
 
     // guideki fieldlara yazılı değerleri config nesnesine kaydediyor.
     private void updateConfigFromGui(){
@@ -61,13 +73,29 @@ public class UDPSenderController {
         sendPeriodicButton.getStyleClass().add(active ? "button-danger" : "button-primary");
     }
 
+    // akış çalışırken, o an gönderilmekte olan config ile çelişebilecek her şeyi kilitler:
+    // alan düzenlemeleri stream yeniden başlamadan uygulanmaz, Send Once aynı anda ikinci
+    // bir gönderimle çakışır, Load JSON çalışan stream'in referans aldığı config'i arkadan
+    // değiştirir, Show Messages ise aynı config nesnesini paylaştığı için mesajı akış
+    // sürerken sessizce değiştirebilir. sendPeriodicButton (STOP) her zaman açık kalır.
+    private void setControlsDisabled(boolean disabled) {
+        ipField.setDisable(disabled);
+        portField.setDisable(disabled);
+        messageField.setDisable(disabled);
+        intervalField.setDisable(disabled);
+        sendOnceButton.setDisable(disabled);
+        loadJsonButton.setDisable(disabled);
+        saveJsonButton.setDisable(disabled);
+        showMessagesButton.setDisable(disabled);
+    }
+
     // config'in gönderilebilir olup olmadığını kontrol eder (hex geçerli mi, IP çözülebiliyor mu);
-    // geçersizse status'u kırmızı hata mesajıyla günceller ve false döner. sendOnce() ve
+    // geçersizse status'u kırmızı hata mesajıyla günceller ve true döner. sendOnce() ve
     // sendPeriodic() ikisi de göndermeden/akışı başlatmadan önce bunu çağırıyor.
-    private boolean validateConfigForSend() {
+    private boolean configInvalidForSend() {
         try {
             sender.validate(config);
-            return true;
+            return false;
         } catch (UnknownHostException e) {
             setStatus("Invalid IP address.", true);
         } catch (IllegalArgumentException e) {
@@ -75,7 +103,7 @@ public class UDPSenderController {
         } catch (IOException e) {
             setStatus("Packet could not be prepared: " + e.getMessage(), true);
         }
-        return false;
+        return true;
     }
 
 
@@ -83,8 +111,7 @@ public class UDPSenderController {
     private void loadJson(){
 
         try {
-            Config loaded = parser.getJSONdata();
-            config = loaded;
+            config = parser.getJSONdata();
 
             ipField.setText(config.getNetwork().getIp());
             portField.setText(String.valueOf(config.getNetwork().getPort()));
@@ -95,7 +122,7 @@ public class UDPSenderController {
 
         } catch (ConfigException e) {
             setStatus("Status : " + e.getMessage(), true);
-            e.printStackTrace();   // konsolda tam yığın izi kalsın
+            LOGGER.log(System.Logger.Level.ERROR, "Failed to load config.json", e);
         }
     }
 
@@ -130,7 +157,7 @@ public class UDPSenderController {
             return;
         }
 
-        if (!validateConfigForSend()) {
+        if (configInvalidForSend()) {
             return;
         }
 
@@ -147,7 +174,7 @@ public class UDPSenderController {
     @FXML
     private void sendPeriodic(){
 
-        if (streaming==false) {
+        if (!streaming) {
             if (config == null) {
                 setStatus("Load a JSON file first.", true);
                 return;
@@ -159,13 +186,14 @@ public class UDPSenderController {
                 return;
             }
 
-            if (!validateConfigForSend()) {
+            if (configInvalidForSend()) {
                 return;
             }
 
             streaming = true;
             sendPeriodicButton.setText("STOP");
             setStreamButtonActive(true);
+            setControlsDisabled(true);
             sender.startStream(config, this::handleStreamError);
             setStatus("Streaming STARTED...", false);
         }else{
@@ -173,6 +201,7 @@ public class UDPSenderController {
             streaming=false;
             sendPeriodicButton.setText("Send Periodically");
             setStreamButtonActive(false);
+            setControlsDisabled(false);
             sender.stopStream();
             setStatus("Streaming STOPPED...", false);
 
@@ -188,7 +217,9 @@ public class UDPSenderController {
             streaming = false;
             sendPeriodicButton.setText("Send Periodically");
             setStreamButtonActive(false);
+            setControlsDisabled(false);
             setStatus("Streaming stopped: " + message, true);
+
         });
     }
 
@@ -203,7 +234,11 @@ public class UDPSenderController {
         FXMLLoader loader = new FXMLLoader(
                 UdpSenderApplication.class.getResource("/new-message-view.fxml"));
         Scene scene = new Scene(loader.load());   // load() önce çağrılmalı
-        scene.getStylesheets().add(UdpSenderApplication.class.getResource("/style.css").toExternalForm());
+
+        URL styleUrl = Objects.requireNonNull(
+                UdpSenderApplication.class.getResource("/style.css"),
+                "style.css not found on classpath");
+        scene.getStylesheets().add(styleUrl.toExternalForm());
 
         NewMessageController controller = loader.getController();
         controller.setConfig(config);                      // aynı nesne paylaşılıyor

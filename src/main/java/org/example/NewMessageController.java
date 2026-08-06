@@ -1,10 +1,7 @@
 package org.example;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -65,6 +62,7 @@ public class NewMessageController {
     // doldurulan bitler yeşil, mevcut byte'ı tamamlamak için gereken bitler kırmızı
     // (kullanıcı tek sayıda hex/bit bıraktığında UDP gönderiminde hata çıkmasın diye uyarı),
     // geri kalanı (henüz sırası gelmemiş) gri.
+    @SuppressWarnings("unchecked")
     private void updateBitBar() {
         int filled = 0;
 
@@ -74,10 +72,16 @@ public class NewMessageController {
             ComboBox<String> comboBox = (ComboBox<String>) row.getChildren().get(0);
             TextField textField = (TextField) row.getChildren().get(1);
             String bitLength = comboBox.getValue();
-            if (bitLength == null || textField.getText().isBlank()) continue;
+            String value = textField.getText();
+            if (bitLength == null || value == null || value.isBlank()) continue;
 
             try {
-                filled += HexUtil.bitsOf(bitLength);
+                int bits = HexUtil.bitsOf(bitLength);
+                // HexUtil.toHex() her alanı KENDİ İÇİNDE en yakın nibble'a (4 bit) yuvarlıyor;
+                // ham bit toplamı bunu yansıtmaz (ör. 5 bit + 3 bit ham toplamda 8 bit görünür,
+                // ama gerçekte 2+1=3 nibble, yani 12 bit ve tek sayıda hex karakteri üretir).
+                // Bar'ın gerçek gönderim koşuluyla birebir örtüşmesi için aynı yuvarlamayı uyguluyoruz.
+                filled += ((bits + 3) / 4) * 4;
             } catch (IllegalArgumentException ignored) {
                 // geçersiz seçim: bit sayısına katma
             }
@@ -178,6 +182,16 @@ public class NewMessageController {
             return;
         }
 
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
+                "Delete \"" + name + "\"? This cannot be undone.",
+                ButtonType.OK, ButtonType.CANCEL);
+        confirm.setTitle("Delete Message");
+        confirm.setHeaderText(null);
+
+        if (confirm.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) {
+            return;
+        }
+
         messageService.delete(config, found);
 
         refreshSavedMessages();
@@ -206,18 +220,18 @@ public class NewMessageController {
         }
         comboBox.setPromptText("Bit length");
         comboBox.setValue(bitLength);
-        comboBox.valueProperty().addListener((o, a, b) -> updatePreview());
+        comboBox.valueProperty().addListener((_, _, _) -> updatePreview());
 
         TextField valueField = new TextField(value);
         valueField.setPromptText("255 or 0xFF");
-        valueField.textProperty().addListener((o, a, b) -> updatePreview());
+        valueField.textProperty().addListener((_, _, _) -> updatePreview());
 
         Label hexLabel = new Label("-");
         hexLabel.setPrefWidth(90);
 
         Button removeButton = new Button("X");
         removeButton.getStyleClass().add("button-remove");
-        removeButton.setOnAction(e -> {//4Sels4n+78
+        removeButton.setOnAction(_ -> {//4Sels4n+78
             fieldsBox.getChildren().remove(row);
             updatePreview();
         });
@@ -228,6 +242,7 @@ public class NewMessageController {
 
     // ---------- canlı önizleme ----------
 
+    @SuppressWarnings("unchecked")
     private void updatePreview() {
 
         StringBuilder combined = new StringBuilder();
@@ -249,13 +264,14 @@ public class NewMessageController {
             }
         }
 
-        preview.setText(combined.length() == 0 ? "-" : combined.toString());
+        preview.setText(combined.isEmpty() ? "-" : combined.toString());
         updateBitBar();
     }
 
     // ---------- kaydetme ----------
 
     @FXML
+    @SuppressWarnings("unchecked")
     public void saveMessages() {
 
         String name = newMessageName.getText();

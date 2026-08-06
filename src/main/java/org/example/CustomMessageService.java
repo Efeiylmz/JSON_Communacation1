@@ -46,6 +46,15 @@ public class CustomMessageService {
     public void delete(Config config, CustomMessage message){
 
         config.getCustomMessagesList().remove(message);
+
+        // silinen mesaj o an aktif gönderilecek metinse (Update() sırasında oraya
+        // kopyalanmıştı), eski/stale hex'in gönderilmeye devam etmemesi için temizle.
+
+        if (config.getMessage() != null
+                && HexUtil.build(message).equals(config.getMessage().getText())) {
+            config.getMessage().setText("");
+        }
+
         parser.saveJSONData(config);
     }
 

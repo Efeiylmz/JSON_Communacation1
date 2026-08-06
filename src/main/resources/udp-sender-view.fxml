@@ -25,6 +25,7 @@
                        promptText="1xx.1xx.1xx.1xx"/>
             <Region HBox.hgrow="ALWAYS"/>
             <Button text="Show Messages"
+                    fx:id="showMessagesButton"
                     onAction="#newMessageWindow"
             />
         </HBox>
@@ -56,13 +57,16 @@
 
             <HBox spacing="10">
                 <Button text="Load JSON"
+                        fx:id="loadJsonButton"
                         onAction="#loadJson"/>
                 <Button text="Save JSON"
+                        fx:id="saveJsonButton"
                         onAction="#saveJson"/>
             </HBox>
 
             <HBox spacing="10">
                 <Button text="Send Once"
+                        fx:id="sendOnceButton"
                         styleClass="button-primary"
                         onAction="#sendOnce"/>
                 <Button fx:id="sendPeriodicButton"

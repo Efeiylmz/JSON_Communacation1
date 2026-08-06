@@ -32,7 +32,7 @@
                 <HBox spacing="10" alignment="CENTER_LEFT">
                     <Label text="Name" prefWidth="125"/>
                     <TextField fx:id="newMessageName" maxWidth="150"/>
-                    <Label text="Byte Format" prefWidth="125"/>
+                    <Label text="Byte Format =" prefWidth="125"/>
                     <ComboBox fx:id="endianness" prefWidth="150"/>
 
                 </HBox>
@@ -41,7 +41,7 @@
     </top>
 
     <center>
-        <VBox spacing="0">
+        <VBox>
             <padding>
                 <Insets top="10" right="20" bottom="10" left="20"/>
             </padding>
@@ -58,9 +58,8 @@
                 <Insets top="10" right="20" bottom="20" left="20"/>
             </padding>
 
-            <Label text="Bit Occupancy (Total 32 bit)"/>
+            <Label text="Bit Occupancy (Total 32 bit)" styleClass="panel-title"/>
             <HBox spacing="12" alignment="CENTER_LEFT">
-
                 <HBox fx:id="bitBar" spacing="10" alignment="CENTER_LEFT"/>
             </HBox>
 
